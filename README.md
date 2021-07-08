@@ -6,7 +6,7 @@
 
 ## Build
 ```
-mvn assembly:single
+mvn package
 ```
 
 ## Run
@@ -76,7 +76,7 @@ c. Add additional import, and additional logic to main method:
    </properties>
  
    <dependencies>
-@@ -25,11 +23,49 @@
+@@ -25,9 +23,49 @@
        <version>4.11</version>
        <scope>test</scope>
      </dependency>
@@ -98,41 +98,45 @@ c. Add additional import, and additional logic to main method:
    </dependencies>
  
    <build>
++    <plugins>
++      <plugin>
++        <artifactId>maven-assembly-plugin</artifactId>
++        <executions>
++          <execution>
++            <id>make-assembly</id> <!-- this is used for inheritance merges -->
++            <phase>package</phase> <!-- bind to the packaging phase -->
++            <goals>
++              <goal>single</goal>
++            </goals>
++          </execution>
++        </executions>
++        <configuration>
++          <descriptorRefs>
++            <!-- This tells Maven to include all dependencies -->
++            <descriptorRef>jar-with-dependencies</descriptorRef>
++          </descriptorRefs>
++          <archive>
++            <manifest>
++              <mainClass>Main</mainClass>
++            </manifest>
++          </archive>
++        </configuration>
++      </plugin>
++    </plugins>
      <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
        <plugins>
-+        <plugin>
-+          <artifactId>maven-assembly-plugin</artifactId>
-+          <executions>
-+            <execution>
-+              <id>make-assembly</id> <!-- this is used for inheritance merges -->
-+              <phase>package</phase> <!-- bind to the packaging phase -->
-+              <goals>
-+                <goal>single</goal>
-+              </goals>
-+            </execution>
-+          </executions>
-+          <configuration>
-+            <descriptorRefs>
-+              <!-- This tells Maven to include all dependencies -->
-+              <descriptorRef>jar-with-dependencies</descriptorRef>
-+            </descriptorRefs>
-+            <archive>
-+              <manifest>
-+                <mainClass>Main</mainClass>
-+              </manifest>
-+            </archive>
-+          </configuration>
-+        </plugin>
          <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
-         <plugin>
-           <artifactId>maven-clean-plugin</artifactId>
 ```
 
 This will change the maven goals to allow the build of an assembly that has all the depedencies included in the same jar file.
 
 To build the assembly run:
 ```
-mvn assembly:single
+mvn compile assembly:single
+```
+or just:
+```
+mvn package
 ```
 
 To run the application execute:
